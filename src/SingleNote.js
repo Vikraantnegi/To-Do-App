@@ -6,7 +6,7 @@ const SingleNote = (props) => {
         <View  
             backgroundColor={randomBackgroundColor()} 
             style={styles.textViewProperties}>
-            <Text style={styles.textProperties1}>{props.date.toDateString()}</Text>
+            <Text style={styles.textProperties1}>{props.date}</Text>
             <Text style={styles.textProperties}>{props.text}</Text>
         </View>
     );

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, TextInput, Button, TouchableHighlight} from 'react-native';
+import firebase from 'firebase';
 
 const CreateNote = (props) => {
     const [newNote, setNewNote] = useState('')
@@ -24,8 +25,16 @@ const CreateNote = (props) => {
                 <Button 
                     title = {'Create Note'}
                     onPress={() => {
-                        props.onCreate(newNote)
-                        setNewNote('')
+                        if(newNote !== ''){
+                            const UserId = firebase.auth().currentUser.uid
+                            const path = `/users/{UserId}/`
+                            firebase.database()
+                            .ref(path).push({
+                                'date' : new Date().toDateString(),
+                                'text' : newNote
+                            })
+                            setNewNote('') 
+                        }
                     }}
                     color= "red"
                 />

@@ -1,11 +1,26 @@
-import React, { useState } from 'react';
-import { FlatList, Text, View, StyleSheet, Image, TextInput} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { FlatList, Text, View, StyleSheet, Image, TextInput, TouchableHighlight, Button} from 'react-native';
 import SingleNote from './SingleNote';
 import CreateNote from './NewNote';
+import firebase from 'firebase';
+import _ from 'lodash';
 
 const MainScreen = () => {
 
     const [data, setData] = useState([])
+
+    const UserId = firebase.auth().currentUser.uid
+
+    useEffect(() => {firebase.database()
+            .ref(`/users/{UserId}/`)
+            .on('value', (newData) => {
+                const newList = _.map(newData.val(), (value, key) => {
+                    return {...value};
+                })
+                setData(newList.reverse())
+            })
+    }, [])
+            
 
     const addNewNote = (text) => {
         if(text.length > 0){
@@ -31,6 +46,18 @@ const MainScreen = () => {
                         return <SingleNote date = {item.date} text = {item.text} />
                     }}
                 />
+            <TouchableHighlight
+                style ={{
+                    alignSelf : 'center',
+                    width:100,
+                    marginTop : 10
+                }}> 
+                <Button title = 'LogOut!'
+                    onPress={() => {
+                        firebase.auth().signOut()
+                    }}
+                    color = "red" />
+            </TouchableHighlight>
         </View>
     );        
 }
